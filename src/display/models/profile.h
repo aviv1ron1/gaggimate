@@ -130,13 +130,17 @@ struct Phase {
 struct Profile {
     String id;
     String label;
-    String type; // "standard" | "pro"
+    String type; // "standard" | "pro" | "maintenance"
     String description;
     bool utility = false;
     float temperature;
     bool favorite = false;
     bool selected = false;
     std::vector<Phase> phases;
+
+    // Maintenance profiles behave like utility profiles (hidden from the normal
+    // coffee selector, run from the maintenance flow).
+    bool isUtility() const { return utility || type == "maintenance"; }
 
     bool isVolumetric() const {
         for (const auto &phase : phases) {
@@ -244,7 +248,7 @@ inline bool parseProfile(const JsonObject &obj, Profile &profile) {
     profile.temperature = obj["temperature"].as<float>();
     profile.favorite = obj["favorite"] | false;
     profile.selected = obj["selected"] | false;
-    profile.utility = obj["utility"] | false;
+    profile.utility = (obj["utility"] | false) || (profile.type == "maintenance");
 
     auto phasesArray = obj["phases"].as<JsonArray>();
     for (JsonObject p : phasesArray) {

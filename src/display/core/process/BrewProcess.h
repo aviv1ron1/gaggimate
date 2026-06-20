@@ -66,7 +66,7 @@ class BrewProcess : public Process {
                                        waterPumped, profile.type);
     }
 
-    bool isUtility() const { return profile.utility; }
+    bool isUtility() const { return profile.isUtility(); }
 
     double getBrewVolume() const {
         double brewVolume = 0;
