@@ -165,6 +165,9 @@ void WebUIPlugin::loop() {
         if (controller->getClientController()->hasLatency()) {
             statusDoc["lat"] = controller->getClientController()->getLatencyMs();
         }
+        // Controller (BLE peripheral) link state, so the web UI can show an
+        // accurate connection indicator. 1 = connected, 0 = disconnected.
+        statusDoc["cc"] = controller->getClientController()->getClient()->isConnected() ? 1 : 0;
 
         bool bleConnected = BLEScales.isConnected();
         // Add Bluetooth scale weight information
