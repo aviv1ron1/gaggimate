@@ -112,6 +112,7 @@ Settings::Settings() {
     emptyTankDistance = preferences.getInt("sr_ed", 210);
     fullTankDistance = preferences.getInt("sr_fd", 30);
     altRelayFunction = preferences.getInt("alt_relay", ALT_RELAY_GRIND);
+    apiKey = preferences.getString("api_key", "gaggimate-key");
 
     commutationGain = preferences.getFloat("p_cm", DEFAULT_COMMUTATION_GAIN);
     convergenceGain = preferences.getFloat("p_cv", DEFAULT_CONVERGENCE_GAIN);
@@ -457,6 +458,11 @@ void Settings::setFullTankDistance(int full_tank_distance) {
 
 void Settings::setAltRelayFunction(int alt_relay_function) { altRelayFunction = alt_relay_function; }
 
+void Settings::setApiKey(const String &key) {
+    apiKey = key;
+    save();
+}
+
 void Settings::setAutoWakeupEnabled(bool enabled) {
     autowakeupEnabled = enabled;
     save();
@@ -583,6 +589,7 @@ void Settings::doSave() {
     preferences.putInt("sr_ed", emptyTankDistance);
     preferences.putInt("sr_fd", fullTankDistance);
     preferences.putInt("alt_relay", altRelayFunction);
+    preferences.putString("api_key", apiKey);
     preferences.putString("btnb", implode(buttonBehavior, ","));
     preferences.putFloat("p_cm", commutationGain);
     preferences.putFloat("p_cv", convergenceGain);

@@ -17,6 +17,7 @@
 #include <display/plugins/AutoWakeupPlugin.h>
 #include <display/plugins/BoilerFillPlugin.h>
 #include <display/plugins/LedControlPlugin.h>
+#include <display/plugins/RestApiPlugin.h>
 #include <display/plugins/ShotHistoryPlugin.h>
 #include <display/plugins/SmartGrindPlugin.h>
 #include <display/plugins/WebUIPlugin.h>
@@ -96,6 +97,7 @@ void Controller::setup() {
     pluginManager->registerPlugin(new NetworkWatchdogPlugin());
     pluginManager->registerPlugin(new WifiStaWatchdogPlugin());
     pluginManager->registerPlugin(new ImprovPlugin());
+    pluginManager->registerPlugin(new RestApiPlugin());
 #endif
     pluginManager->registerPlugin(&ShotHistory);
 #ifndef GAGGIMATE_SIM
