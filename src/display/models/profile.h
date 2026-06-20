@@ -43,6 +43,7 @@ struct Phase {
     PhaseType phase; // "preinfusion" | "brew"
     int valve;       // 0 or 1
     float duration;
+    float durationFallback = 0.0f; // time-based stop when no scale; 0 = unused
     bool pumpIsSimple;
     int pumpSimple; // Used if pumpIsSimple == true
     float temperature;
@@ -109,7 +110,10 @@ struct Phase {
         if (type == "standard" && volumetricTested) {
             return false;
         }
-        return time_in_phase > duration;
+        // When no scale is connected, use durationFallback (if set) as the stop
+        // time instead of duration, which then acts only as a safety ceiling.
+        float timeCeiling = (!enableVolumetric && durationFallback > 0.0f) ? durationFallback : duration;
+        return time_in_phase > timeCeiling;
     }
 
     void removeVolumetricTarget() {
@@ -249,6 +253,7 @@ inline bool parseProfile(const JsonObject &obj, Profile &profile) {
         phase.phase = p["phase"].as<String>() == "preinfusion" ? PhaseType::PHASE_TYPE_PREINFUSION : PhaseType::PHASE_TYPE_BREW;
         phase.valve = p["valve"].as<int>();
         phase.duration = p["duration"].as<float>();
+        phase.durationFallback = p["durationFallback"] | 0.0f;
         if (p["temperature"].is<float>()) {
             phase.temperature = p["temperature"].as<float>();
         } else {
@@ -347,6 +352,9 @@ inline void writeProfile(JsonObject &obj, const Profile &profile) {
         p["phase"] = phase.phase == PhaseType::PHASE_TYPE_PREINFUSION ? "preinfusion" : "brew";
         p["valve"] = phase.valve;
         p["duration"] = phase.duration;
+        if (phase.durationFallback > 0.0f) {
+            p["durationFallback"] = phase.durationFallback;
+        }
         p["temperature"] = phase.temperature;
         auto transition = p["transition"].to<JsonObject>();
         switch (phase.transition.type) {
