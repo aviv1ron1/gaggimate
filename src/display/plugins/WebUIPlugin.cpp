@@ -174,6 +174,7 @@ void WebUIPlugin::loop() {
         statusDoc["bw"] = bleConnected ? this->currentBluetoothWeight : 0; // current bluetooth weight
         statusDoc["cw"] = bleConnected ? this->currentBluetoothWeight : 0; // Use 'currentWeight' for forward compatbility
         statusDoc["bc"] = bleConnected;                                    // bluetooth scale connected status
+        statusDoc["se"] = controller->getSettings().isVolumetricTarget() ? 1 : 0; // scale use enabled (volumetric)
         // Scale battery — only surfaced when the driver reports one and the
         // value isn't the UNKNOWN sentinel (255). UI omits the battery pill
         // entirely when `sbat` is absent, so disconnected/unknown scales don't
